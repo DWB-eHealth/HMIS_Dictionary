@@ -32,7 +32,7 @@ dossiersEditorModule.controller('dossiersEditorMainController', ['$scope', 'doss
      * @dependencies dossiersReaderMeFactory
      */
     var me = dossiersReaderMeFactory.get({},function() {
-        $scope.autho = $scope.show_admin;
+        $scope.autho = me.userGroups[0].name == $scope.userAdminGroup;
         console.log('dossiersEditor: User authorised to edit: ' + $scope.autho);
     });
 
@@ -132,6 +132,7 @@ dossiersEditorModule.controller('dossiersEditorMainController', ['$scope', 'doss
             }, function() {
                 console.log("original", $scope.translation.translations);
                 $scope.translation.translations.forEach(function(translation) {
+                    console.log($scope.selectedLanguage.code, translation.locale, translation.property, translation.locale != $scope.selectedLanguage.code || translation.property != "DESCRIPTION");
                     if(translation.locale != $scope.selectedLanguage.code || translation.property != "DESCRIPTION"){
                         translationsArray.push(translation);
                     }

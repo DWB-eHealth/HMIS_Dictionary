@@ -4,7 +4,7 @@
 ------------------------------------------------------------------------------------*/
 
 
-var qryDatasets = dhisUrl + 'dataSets.json?paging=false&filter=id\\:!in\\:[:blackList]';
+var qryDatasets = dhisUrl + 'dataSets.json?paging=false';
 
 datasetsModule.factory('datasetsFactory', ['$resource',
     function($resource) {
@@ -61,11 +61,11 @@ datasetsModule.factory('datasetsIndicatorsFactory', ['$resource',
     }
 ]);
 
-var qryDatsetIndicatorExpression = dhisUrl + 'expressions/description?expression=:expression'
+var qryIndicatorExpression = dhisUrl + 'expressions/description?expression=:expression'
 
 datasetsModule.factory('datasetsIndicatorExpressionFactory', ['$resource',
     function($resource) {
-        return $resource(qryDatsetIndicatorExpression, {
+        return $resource(qryIndicatorExpression, {
             expression: '@expression'
         }, {
             query: {

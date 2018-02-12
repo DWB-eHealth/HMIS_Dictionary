@@ -47,7 +47,7 @@ function($scope, $translate, $anchorScroll, datasetsFactory, datasetsDataelement
      *  @dependencies datasetsFactory
      *  @scope datasetsMainController
      */
-    $scope.datasets = datasetsFactory.get({blackList: $scope.blacklist_datasets}, function() {
+    $scope.datasets = datasetsFactory.get(function() {
         endLoadingState(true);
     });
 
@@ -248,21 +248,9 @@ datasetsModule.controller('datasetCategoryComboController', ['$scope', '$transla
                 $scope.datasetDataElements.dataSetElements.forEach(function(dataElement) {
                     $scope.allIndicators.indicators.forEach(function(indicator) {
                         const regex = /#{(\w+)\.?\w+?}/g;
-                        const num = indicator.numerator;
-                        const den = indicator.denominator;
+                        const str = indicator.numerator;
                         let m;
-                        while ((m = regex.exec(num)) !== null) {
-                            // This is necessary to avoid infinite loops with zero-width matches
-                            if (m.index === regex.lastIndex) {
-                                regex.lastIndex++;
-                            }
-                            if (m[1] == dataElement.dataElement.id) {
-                                if ($scope.indicators.indexOf(indicator) == -1) $scope.indicators.push(indicator);
-                                return;
-                            }
-                        }
-
-                        while ((m = regex.exec(den)) !== null) {
+                        while ((m = regex.exec(str)) !== null) {
                             // This is necessary to avoid infinite loops with zero-width matches
                             if (m.index === regex.lastIndex) {
                                 regex.lastIndex++;

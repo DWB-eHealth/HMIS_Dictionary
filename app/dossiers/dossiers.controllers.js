@@ -52,11 +52,7 @@ dossiersModule.controller('dossiersMainController', ['$scope', '$translate', '$a
         endLoadingState();
     });
 
-    var allDataSets = dossiersServiceDataSetsFactory.get();
-    var allIndicatorGroups = dossiersServiceIndicatorGrpsFactory.get();
-
-    $scope.serviceDataSets = [];
-    $scope.indicatorGroups = [];
+    $scope.serviceDataSets = {};
 
     /*
      *  @name none
@@ -77,20 +73,16 @@ dossiersModule.controller('dossiersMainController', ['$scope', '$translate', '$a
 
             startLoadingState(false);
 
-            var serviceCodeRegex = new RegExp("_" + $scope.selectedService.code.split('_')[2] + "(_|$)");
-
             // indicatorGroups
-            $scope.indicatorGroups = allIndicatorGroups.indicatorGroups.filter(function(group) {
-                return group.attributeValues.some(function(attribute) {
-                    return serviceCodeRegex.test(attribute.value);
-                });
+            $scope.indicatorGroups = dossiersServiceIndicatorGrpsFactory.get({
+                serviceCode1: '_' + $scope.selectedService.code.split('_')[2],
+                serviceCode2: '_' + $scope.selectedService.code.split('_')[2] + '_'
             });
 
             // datasets
-            $scope.serviceDataSets = allDataSets.dataSets.filter(function(dataSet) {
-                return dataSet.attributeValues.some(function(attribute) {
-                    return serviceCodeRegex.test(attribute.value);
-                });
+            $scope.serviceDataSets = dossiersServiceDataSetsFactory.get({
+                serviceCode1: '_' + $scope.selectedService.code.split('_')[2],
+                serviceCode2: '_' + $scope.selectedService.code.split('_')[2] + '_'
             });
 
             // Service description
@@ -188,6 +180,35 @@ dossiersModule.controller('dossiersIndicatorController', ['$scope', 'dossiersInd
             });
         }
     });
+
+    // The next three functions are repeated from search controllers!
+    // numerator and denominator description is in indicator description
+    // (translatation doesn't work for denom and num columns) so have be extracted
+    $scope.getNumerator = function(indicator) {
+        var re = /(NUM:)(.*)(DENOM:)/;
+        var result = re.exec(indicator.displayDescription);
+        if (result !== null) {
+            return result.length > 1 ? result[2] : "x";
+        }
+    }
+
+    $scope.getDenominator = function(indicator) {
+        var re = /(DENOM:)(.*)/;
+        var result = re.exec(indicator.displayDescription);
+        if (result !== null) {
+            return result.length > 1 ? result[2] : "x";
+        }
+    }
+
+    $scope.getDescription = function(indicator) {
+        var re = /(.*)(NUM:)/;
+        var result = re.exec(indicator.displayDescription);
+        if (result !== null) {
+            return result[1];
+        } else {
+            return indicator.displayDescription;
+        }
+    }
 
     $scope.getIndicatorGroupNames = function(indicator) {
         var indicatorGroupNames;
